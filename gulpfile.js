@@ -180,8 +180,8 @@ gulp.task('version', ['sass-deploy'], function () {
 	// Depends on sass-deploy because that is what moves index.html from src to public
 	gulp.src('./public/index.html')
 		.pipe(replace(
-			/<script src="\/dist\/js\/main(\.min)*\.js" async><\/script>/g,
-			'<script src="/dist/js/main.min.js?ver=' + new Date().getTime() + '" async></script>'
+			/<script src="dist\/js\/main(\.min)*\.js" async><\/script>/g,
+			'<script src="dist/js/main.min.js?ver=' + new Date().getTime() + '" async></script>'
 		))
 		.pipe(gulp.dest('./public'));
 });
