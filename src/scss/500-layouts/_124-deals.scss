@@ -1,0 +1,75 @@
+.content--deals {
+    .input--text {
+        border: 1px solid $gray;
+        border-bottom: 0;
+        padding: 6px 10px;
+        font-size: 16px;
+    }
+    .label--labelize {
+        left: 10px;
+        bottom: 6px;
+        font-size: 16px;
+        &.labelize {
+            bottom: 84%;
+            margin-bottom: 0;
+            background: white;
+            display: block;
+            z-index: 111;
+            padding: 0 2px;
+            font-size: 11px;
+        }
+    }
+    p {
+        margin: 0 0 2px !important;
+    }
+    .input__wrapper {
+        margin: 15px 0;
+    }
+}
+
+.lot,
+.calculations {
+    margin: 10px -10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.lot__details,
+.calc {
+    margin: 0 10px;
+}
+
+.lot__details {
+    max-width: 140px;
+}
+
+.lot.items {
+    float: left;
+    overflow: hidden;
+    width: calc( 100% - 240px );
+}
+.calculations {
+    float: right;
+    width: 240px;
+}
+.addOne {
+    height: 100%;
+}
+
+.calc {
+    padding: 10px;
+    min-width: 200px;
+    &:first-child {
+        box-shadow: 0 0 10px rgba( 0, 0, 0, 0.5 );
+    }
+    p {
+        display: flex;
+    }
+    .value {
+        margin-left: auto;
+    }
+}
+
+
+
+
+// #header,#footer {display: none;}

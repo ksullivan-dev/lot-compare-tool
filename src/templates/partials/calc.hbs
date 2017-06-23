@@ -1,0 +1,16 @@
+{{# with Data }}
+    <div class="calc">
+        <h3>Details</h3>
+        <p>Total Cost: <span class="value">${{ total }}</span></p>
+        <p>Cost per item: <span class="value">${{ unitCost }}</span></p>
+        <p>Remaining units: <span class="value">{{ unitsRemaining }}</span></p>
+        <p>Profit (loss): <span class="value">{{ profitDisplay }}</span></p>
+    </div>
+    {{# each items }}
+        <div class="calc calc-{{ id }}">
+            <h3>{{# if name }}{{ name }}{{ else }}Item {{ id }}{{/ if }}</h3>
+            <p>Sales: <span class="value">${{ totals.sales }}</span></p>
+            <p>Return: <span class="value">${{ totals.return }}</span></p>
+        </div>
+    {{/ each }}
+{{/ with }}
