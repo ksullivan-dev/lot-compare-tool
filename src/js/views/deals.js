@@ -3,7 +3,9 @@
 	'use strict';
 
 	var Backbone     = require('backbone'),
-		$            = require('jquery');
+		$            = require('jquery'),
+		_            = require('lodash'),
+		Collection   = require('../collections/BaseCollection');
 
 	module.exports = Backbone.View.extend({
 		className: 'content--deals',
@@ -28,7 +30,8 @@
 		},
 		events: {
 			'click .addOne'       : 'add',
-			'keyup .input--text'  : 'updateInputs'
+			'keyup .input--text'  : 'updateInputs',
+			'click .delete'       : 'delete'
 		},
 		add: function( e ){
 			var self = this;
@@ -36,6 +39,7 @@
 			this.addItem();
 			setTimeout( function(){
 				self.$( '.lot__details[data-id]' ).last().find( 'input' ).first().focus();
+				self.$( '.lot__details[data-id]' ).last().append( '<a href="#" class="btn btn--accent action delete">Delete</a>' );
 			}, 0 );
 		},
 		addItem: function(){
@@ -47,7 +51,7 @@
 				totals: {
 					sales: 0,
 					fees: 0,
-					shipping: 0,
+					ship: 0,
 					return: 0
 				}
 			};
@@ -108,8 +112,9 @@
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
 		calc: function( id ){
-			var item, fees;
-			item = this.data.items[ id - 1 ];
+			var self, item, fees;
+			self = this;
+			item = _.find( this.data.items, { 'id': id } );
 			fees = this.data.fees;
 			item.totals = {
 				sales : parseInt( item.estimate * item.price ),
@@ -120,13 +125,24 @@
 
 			this.data.return = 0;
 			this.data.unitsUsed = 0;
-			for( var i = 0; i < this.data.items.length; i++ ){
-				var newItem = this.data.items[ i ];
-				if( newItem.totals ){
-					this.data.return += newItem.totals.return;
-					this.data.unitsUsed += newItem.estimate;
+			_.each( this.data.items, function( loopItem ){
+				if( loopItem.totals ){
+					self.data.return += loopItem.totals.return;
+					self.data.unitsUsed += loopItem.estimate;
 				}
-			}
+			});
+		},
+		delete: function( e ){
+			var el, parent, item, id;
+			el = $( e.currentTarget );
+			parent = el.closest( '.lot__details' );
+			id = parent.data( 'id' );
+			item = _.findIndex( this.data.items, { 'id': id } );
+			this.data.items.splice( item, 1 );
+			parent.remove();
+
+			// Render calculations
+			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
 		render: function () {
 			var template, layout;

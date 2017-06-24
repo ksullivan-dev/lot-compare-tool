@@ -2,5 +2,6 @@ node_modules
 public/dist/css
 public/dist/js
 public/index.html
+.sass-cache
 
 *.log
