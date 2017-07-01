@@ -27,11 +27,38 @@
 				profitDisplay: '$0'
 			};
 			this.render();
+			_.bindAll( this, 'readerOnload' );
 		},
 		events: {
 			'click .addOne'       : 'add',
 			'keyup .input--text'  : 'updateInputs',
-			'click .delete'       : 'delete'
+			'click .delete'       : 'delete',
+			'change #fileUpload'  : 'fileUpload'
+		},
+		fileUpload: function( e ){
+			var file = e.target.files[0];
+			var reader = new FileReader();
+			reader.readAsText( file );
+			reader.onload = this.readerOnload;
+		},
+		readerOnload: function( e ){
+			this.processData( e.target.result );
+		},
+		processData: function( data ){
+			var rows = data.split( /\r\n|\n/ );
+			var headers = rows[0].split( ',' );
+			var json = [];
+			for( var i = 1; i<rows.length; i++ ){
+				if( rows[i] !== '' ){
+					var object = {};
+					var cols = rows[i].split( ',' );
+					for( var x = 0; x<cols.length; x++ ){
+						object[headers[x]] = cols[x];
+					}
+					json.push( object );
+				}
+			}
+			console.log( json );
 		},
 		add: function( e ){
 			var self = this;
