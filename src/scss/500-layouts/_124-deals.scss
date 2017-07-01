@@ -40,16 +40,44 @@
 
 .lot__details {
     max-width: 140px;
+    margin-bottom: 10px;
 }
 
 .lot.items {
     float: left;
     overflow: hidden;
     width: calc( 100% - 240px );
+    @media screen and ( max-width: 600px ){
+        float: none;
+        width: 100%;
+        padding-top: 100px;
+    }
 }
 .calculations {
     float: right;
     width: 240px;
+    @media screen and ( max-width: 600px ){
+        float: none;
+        width: 100%;
+        .calc {
+            &:first-child {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                margin: 0;
+                box-sizing: border-box;
+                background: $white;
+                z-index: 200;
+                p {
+                    display: inline-flex;
+                    width: calc( 45% - 10px );
+                    margin: 0 10px !important;
+                }
+            }
+        }
+
+    }
 }
 .addOne {
     height: 100%;
