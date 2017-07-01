@@ -133,6 +133,7 @@
 			});
 		},
 		delete: function( e ){
+			e.preventDefault();
 			var el, parent, item, id;
 			el = $( e.currentTarget );
 			parent = el.closest( '.lot__details' );
