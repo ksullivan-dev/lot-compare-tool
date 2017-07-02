@@ -1,6 +1,7 @@
 <h2 class="modal__header">Select the Columns that match up with the item details</h2>
 <div class="modal__alert alert"></div>
 <p class="modal__helper-text">{{ Message }}</p>
+<div class="styled-p matched-columns"></div>
 {{# each Headers }}
-    <a href="#" class="styled--link">{{ this }}</a>
+    <a href="#" class="styled--link columnMatcher">{{ this }}</a><br />
 {{/ each }}
