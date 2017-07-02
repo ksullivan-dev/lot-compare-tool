@@ -27,7 +27,7 @@
 				profitDisplay: '$0'
 			};
 			this.render();
-			_.bindAll( this, 'readerOnload' );
+			_.bindAll( this, 'processData' );
 		},
 		events: {
 			'click .addOne'       : 'add',
@@ -39,12 +39,10 @@
 			var file = e.target.files[0];
 			var reader = new FileReader();
 			reader.readAsText( file );
-			reader.onload = this.readerOnload;
+			reader.onload = this.processData;
 		},
-		readerOnload: function( e ){
-			this.processData( e.target.result );
-		},
-		processData: function( data ){
+		processData: function( e ){
+			var data = e.target.result;
 			var rows = data.split( /\r\n|\n/ );
 			var headers = rows[0].split( ',' );
 			var json = [];
@@ -58,7 +56,7 @@
 					json.push( object );
 				}
 			}
-			console.log( json );
+			this.app.eventAggregator.trigger( 'launchModal', 'CSVKeys', headers );
 		},
 		add: function( e ){
 			var self = this;

@@ -5,7 +5,11 @@
 	var Backbone        = require('backbone'),
 		$               = require('jquery'),
 		_               = require('lodash'),
-		Deals           = require('../views/deals');
+		Deals           = require('../views/deals'),
+		Modal           = require('../views/_modals/baseModal'),
+		Modals          = {
+			CSVKeys    : require('../views/_modals/csvkeys'),
+		};
 
 		require( '../plugins/whiteout.js');
 
@@ -42,6 +46,8 @@
 			$( document ).on( 'click', '.btn--disabled', function( e ){ e.preventDefault(); } );
 			// Run labelize on all specified input
 			$( document ).on( 'keyup', '.input--labelize', this.labelize );
+
+			this.listenTo( this.app.eventAggregator, 'launchModal', this.launchModal );
 		},
 		labelize: function( e ){
 			var input = $( e.currentTarget );
@@ -53,6 +59,12 @@
 			}
 			e.preventDefault();
 			Backbone.history.navigate($(e.currentTarget).attr('href'), { trigger: true });
+		},
+		launchModal: function( modalName, options ){
+			this.modal = new Modal({ app: this.app });
+			this.modalContent = new Modals[modalName]({ app: this.app, parent: this.modal, modalOptions: options });
+			$( '#modals' ).html( this.modal.el );
+			this.modal.$( '.modal__content' ).html( this.modalContent.el );
 		},
 		loadView: function ( view ) {
 			if (this.view) {
