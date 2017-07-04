@@ -67,15 +67,32 @@
 			this.keyedData.listenTo( this.keyedData, 'change', this.addMultiple );
 		},
 		addMultiple: function( model ){
-			// console.log( model.toJSON(), this.keyedData );
 			var self = this;
+			var dataKeys = model.toJSON();
 			_.each( $( '.lot__details[data-id]' ), function( details ){
 				$( details ).find( '.delete' ).trigger( 'click' );
 			});
-			// this.$( '.lot__details[data-id=1]' ).find( '.delete' ).trigger( 'click' );
+			this.updateTotals();
+			var updateInputFromCSV = function( element, data, inputName, dataKey ){
+				var value;
+				if( ! dataKey ){
+					dataKey = inputName;
+				}
+				value = data[ dataKeys[ dataKey ] ];
+				if( inputName === "shipping" ){
+					value = dataKeys[ dataKey ];
+				}
+				element.find( 'input[data-type=' + inputName + ']' ).val( value ).trigger( 'keyup' );
+			};
 			_.each( this.json, function( data ){
-				console.log( data );
+				var element;
 				self.add();
+				element = self.$( '.lot__details[data-id=' + self.data.count + ']' );
+				updateInputFromCSV( element, data, "name");
+				updateInputFromCSV( element, data, "number" );
+				updateInputFromCSV( element, data, "estimate", "number" );
+				updateInputFromCSV( element, data, "price" );
+				updateInputFromCSV( element, data, "shipping" );
 			});
 		},
 		add: function( e ){
@@ -184,8 +201,18 @@
 			el = $( e.currentTarget );
 			parent = el.closest( '.lot__details' );
 			id = parent.data( 'id' );
-			item = _.findIndex( this.data.items, { 'id': id } );
-			this.data.items.splice( item, 1 );
+			this.data.items[ id - 1 ] = {
+				estimate: 0,
+				number: 0,
+				price: 0,
+				shipping: 0,
+				totals: {
+					fees: 0,
+					return: 0,
+					sales: 0,
+					ship: 0
+				}
+			};
 			parent.remove();
 
 			// Render calculations
