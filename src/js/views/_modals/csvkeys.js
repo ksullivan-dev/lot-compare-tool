@@ -15,27 +15,53 @@
             this.fields = {
                 1: 'name',
                 2: 'number',
-                3: 'estimate',
-                4: 'price',
-                5: 'shipping'
+                3: 'price',
+                4: 'shipping'
             };
 			this.render();
 		},
         events: {
-            'click .columnMatcher': 'nextField',
-            'click .processCSV'   : 'processCSV'
+            'click .columnMatcher'    : 'updateResult',
+            'keyup .input--shipping'  : 'updateResult',
+            'click .reset'            : 'reset',
+            'click .processCSV'       : 'processCSV'
         },
-        nextField: function( e ){
-            var item = $( e.currentTarget );
-            var text = item.text();
-            this.$( '.matched-columns' ).find( 'p[data-field="' + this.fields[ this.count ] + '"] .column-matcher-value' ).html( text );
-            item.hide();
-            this.count++;
-            if( this.count > 5 ){
-                this.$el.append( '<a href="#" class="btn processCSV">Process CSV</a>' );
-                return;
+        updateResult: function( e ){
+            var element, isInput, value, target, input;
+            element = $( e.currentTarget );
+            isInput = element[0].nodeName === "INPUT";
+            value = element[ isInput ? 'val' : 'text' ]();
+            target = this.$( 'p[data-field="' + this.fields[ this.count ] + '"]' );
+
+            input = '<div class="input__wrapper input__wrapper--labelize">';
+            input += '<input type="tel" class="input--text input--labelize input--shipping">';
+            input += '<label for="" class="input__label label--labelize">Shipping</label>';
+            input += '</div>';
+
+            if( value.length > 0 ){
+                target.find( '.column-matcher-value' ).html( value );
+                target.removeClass( 'empty' );
+                if( isInput && this.$( '.processCSV' ).length < 1 ){
+                    this.$( '.btn-container' ).append( '<a href="#" class="btn processCSV">Process CSV</a>' );
+                }
             }
-            this.$( '.matched-columns' ).append( this.app.templates.partials.columnMatcher({ Field: this.fields[ this.count ] }) );
+            if( this.count < 4 ){
+                this.count++;
+                // Remove item from list
+                element.remove();
+                // Add next field
+                this.$( '.matched-columns' ).append( this.app.templates.partials.columnMatcher({ Field: this.fields[ this.count ] }) );
+            }
+
+            if( this.count === 4 && ! isInput ){
+                this.$( '.columnMatcher-container' ).html( '<p>Enter base shipping amount</p>' + input );
+                this.$( 'input' ).focus();
+            }
+        },
+        reset: function( e ){
+            e.preventDefault();
+            this.count = 1;
+            this.render();
         },
         processCSV: function( e ){
             e.preventDefault();
