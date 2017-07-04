@@ -3,14 +3,16 @@
 	'use strict';
 
 	var Backbone = require('backbone'),
-		$        = require('jquery');
+		$        = require('jquery'),
+        _        = require('lodash');
 
 	module.exports = Backbone.View.extend({
 		className: 'modal--csvkeys',
 		initialize: function ( options ) {
 			this.app = options.app;
 			this.parent = options.parent;
-			this.headers = options.modalOptions;
+			this.headers = options.modalOptions.headers;
+            this.data = options.modalOptions.data;
             this.count = 1;
             this.fields = {
                 1: 'name',
@@ -65,7 +67,12 @@
         },
         processCSV: function( e ){
             e.preventDefault();
-            console.log( 'hey' );
+            var data = {};
+            _.each( $( '.matched-columns p' ), function( item, idx, collection ){
+                data[ $( item ).data( 'field' ) ] = $( item ).find( '.column-matcher-value' ).text();
+            });
+            this.data.set( data );
+            this.parent.close();
         },
 		render: function () {
 			this.$el.html(this.app.templates.modals.csvkeys({ Headers: this.headers }));

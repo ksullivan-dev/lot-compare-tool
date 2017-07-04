@@ -5,7 +5,8 @@
 	var Backbone     = require('backbone'),
 		$            = require('jquery'),
 		_            = require('lodash'),
-		Collection   = require('../collections/BaseCollection');
+		Collection   = require('../collections/BaseCollection'),
+		Model        = require('../models/BaseModel');
 
 	module.exports = Backbone.View.extend({
 		className: 'content--deals',
@@ -28,6 +29,7 @@
 			};
 			this.render();
 			_.bindAll( this, 'processData' );
+			_.bindAll( this, 'addMultiple' );
 		},
 		events: {
 			'click .addOne'       : 'add',
@@ -45,7 +47,7 @@
 			var data = e.target.result;
 			var rows = data.split( /\r\n|\n/ );
 			var headers = rows[0].split( ',' );
-			var json = [];
+			this.json = [];
 			for( var i = 1; i<rows.length; i++ ){
 				if( rows[i] !== '' ){
 					var object = {};
@@ -53,22 +55,39 @@
 					for( var x = 0; x<cols.length; x++ ){
 						object[headers[x]] = cols[x];
 					}
-					json.push( object );
+					this.json.push( object );
 				}
 			}
-			this.app.eventAggregator.trigger( 'launchModal', 'CSVKeys', headers );
+			this.keyedData = new Model();
+			var modalOptions = {
+				headers: headers,
+				data: this.keyedData
+			};
+			this.app.eventAggregator.trigger( 'launchModal', 'CSVKeys', modalOptions );
+			this.keyedData.listenTo( this.keyedData, 'change', this.addMultiple );
+		},
+		addMultiple: function( model ){
+			// console.log( model.toJSON(), this.keyedData );
+			var self = this;
+			_.each( $( '.lot__details[data-id]' ), function( details ){
+				$( details ).find( '.delete' ).trigger( 'click' );
+			});
+			// this.$( '.lot__details[data-id=1]' ).find( '.delete' ).trigger( 'click' );
+			_.each( this.json, function( data ){
+				console.log( data );
+				self.add();
+			});
 		},
 		add: function( e ){
 			var self = this;
-			e.preventDefault();
+			if( e ){
+				e.preventDefault();
+			}
 			this.addItem();
-			setTimeout( function(){
-				self.$( '.lot__details[data-id]' ).last().find( 'input' ).first().focus();
-				self.$( '.lot__details[data-id]' ).last().append( '<a href="#" class="btn btn--accent action delete">Delete</a>' );
-			}, 0 );
 		},
 		addItem: function(){
-			var item;
+			var item, self;
+			self = this;
 			this.data.count++;
 			item = {
 				id: this.data.count,
@@ -82,6 +101,8 @@
 			};
 			this.data.items.push( item );
 			this.$( '.addOne' ).before( this.app.templates.partials.deal({ count: this.data.count }) );
+			this.$( '.lot__details[data-id=' + this.data.count + ']' ).find( 'input' ).first().focus();
+			this.$( '.lot__details[data-id=' + this.data.count + ']' ).append( '<a href="#" class="btn btn--accent action delete">Delete</a>' );
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
 		updateInputs: function( e ){
