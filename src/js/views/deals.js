@@ -5,7 +5,6 @@
 	var Backbone     = require('backbone'),
 		$            = require('jquery'),
 		_            = require('lodash'),
-		Collection   = require('../collections/BaseCollection'),
 		Model        = require('../models/BaseModel');
 
 	module.exports = Backbone.View.extend({
@@ -38,28 +37,35 @@
 			'change #fileUpload'  : 'fileUpload'
 		},
 		fileUpload: function( e ){
-			var file = e.target.files[0];
-			var reader = new FileReader();
+			var file, reader;
+			file = e.target.files[0];
+			reader = new FileReader();
 			reader.readAsText( file );
 			reader.onload = this.processData;
 		},
 		processData: function( e ){
-			var data = e.target.result;
-			var rows = data.split( /\r\n|\n/ );
-			var headers = rows[0].split( ',' );
+			var data, rows, headers;
+			data = e.target.result;
+			rows = data.split( /\r\n|\n/ );
+			headers = rows[0].split( ',' );
 			this.json = [];
 			for( var i = 1; i<rows.length; i++ ){
 				if( rows[i] !== '' ){
-					var object = {};
-					var cols = rows[i].split( ',' );
+					var object, cols;
+					object = {};
+					cols = rows[i].split( ',' );
 					for( var x = 0; x<cols.length; x++ ){
 						object[headers[x]] = cols[x];
 					}
 					this.json.push( object );
 				}
 			}
+			this.createKeys( headers );
+		},
+		createKeys: function( headers ){
+			var modalOptions;
 			this.keyedData = new Model();
-			var modalOptions = {
+			modalOptions = {
 				headers: headers,
 				data: this.keyedData
 			};
@@ -67,13 +73,14 @@
 			this.keyedData.listenTo( this.keyedData, 'change', this.addMultiple );
 		},
 		addMultiple: function( model ){
-			var self = this;
-			var dataKeys = model.toJSON();
+			var self, dataKeys;
+			self = this;
+			dataKeys = model.toJSON();
 			_.each( $( '.lot__details[data-id]' ), function( details ){
 				$( details ).find( '.delete' ).trigger( 'click' );
 			});
 			this.updateTotals();
-			var updateInputFromCSV = function( element, data, inputName, dataKey ){
+			function updateInputFromCSV( element, data, inputName, dataKey ){
 				var value;
 				if( ! dataKey ){
 					dataKey = inputName;
@@ -83,7 +90,7 @@
 					value = dataKeys[ dataKey ];
 				}
 				element.find( 'input[data-type=' + inputName + ']' ).val( value ).trigger( 'keyup' );
-			};
+			}
 			_.each( this.json, function( data ){
 				var element;
 				self.add();
