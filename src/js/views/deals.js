@@ -116,6 +116,7 @@
 			item = {
 				id: this.data.count,
 				name: 'Item ' + this.data.count,
+				isCalculated: true,
 				totals: {
 					sales: 0,
 					fees: 0,
@@ -210,6 +211,7 @@
 			parent = el.closest( '.lot__details' );
 			id = parent.data( 'id' );
 			this.data.items[ id - 1 ] = {
+				isCalculated: false,
 				estimate: 0,
 				number: 0,
 				price: 0,

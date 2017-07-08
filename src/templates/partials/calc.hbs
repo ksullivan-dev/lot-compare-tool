@@ -7,10 +7,12 @@
         <p>Profit (loss): <span class="value">{{ profitDisplay }}</span></p>
     </div>
     {{# each items }}
-        <div class="calc calc-{{ id }}">
-            <h3>{{# if name }}{{ name }}{{ else }}Item {{ id }}{{/ if }}</h3>
-            <p>Sales: <span class="value">${{ totals.sales }}</span></p>
-            <p>Return: <span class="value">${{ totals.return }}</span></p>
-        </div>
+        {{# if isCalculated }}
+            <div class="calc calc-{{ id }}">
+                <h3>{{# if name }}{{ name }}{{ else }}Item {{ id }}{{/ if }}</h3>
+                <p>Sales: <span class="value">${{ totals.sales }}</span></p>
+                <p>Return: <span class="value">${{ totals.return }}</span></p>
+            </div>
+        {{/ if }}
     {{/ each }}
 {{/ with }}
