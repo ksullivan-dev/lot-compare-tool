@@ -162,6 +162,20 @@
 				data.total += Number( el.value );
 			});
 
+			// Fees
+			data.fees.rates = Number( this.$( '.rates' ).val() );
+			data.fees.transactionFee = Number( this.$( '.transactionFee' ).val() );
+
+			// Update total return and total items used
+			data.return = 0;
+			data.unitsUsed = 0;
+			_.each( data.items, function( loopItem ){
+				if( loopItem.totals ){
+					data.return += loopItem.totals.return;
+					data.unitsUsed += loopItem.number;
+				}
+			});
+
 			// Units
 			data.units = Number( this.$( '.number--total' ).val() );
 			data.unitCost = ( data.total / data.units ).toFixed( 3 );
@@ -173,10 +187,6 @@
 			if( data.profit < 0 ){
 				data.profitDisplay = '-' + data.profitDisplay;
 			}
-
-			// Fees
-			data.fees.rates = Number( this.$( '.rates' ).val() );
-			data.fees.transactionFee = Number( this.$( '.transactionFee' ).val() );
 
 			// Render calculations
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
@@ -192,15 +202,6 @@
 				fees  : parseInt( item.estimate * ( item.price * fees.rates + fees.transactionFee ) )
 			};
 			item.totals.return = parseInt( item.totals.sales - item.totals.ship - item.totals.fees );
-
-			this.data.return = 0;
-			this.data.unitsUsed = 0;
-			_.each( this.data.items, function( loopItem ){
-				if( loopItem.totals ){
-					self.data.return += loopItem.totals.return;
-					self.data.unitsUsed += loopItem.estimate;
-				}
-			});
 		},
 		delete: function( e ){
 			e.preventDefault();
@@ -222,8 +223,7 @@
 			};
 			parent.remove();
 
-			// Render calculations
-			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
+			this.updateTotals();
 		},
 		render: function () {
 			var template, layout;
