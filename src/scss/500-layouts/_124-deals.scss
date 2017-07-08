@@ -50,7 +50,6 @@
     @media screen and ( max-width: 600px ){
         float: none;
         width: 100%;
-        padding-top: 100px;
     }
 }
 .calculations {
@@ -102,7 +101,6 @@
     margin: 20px 0;
 }
 .columnMatcher {
-    // display: block;
     &::after {
         content: '';
         display: block;
@@ -136,6 +134,16 @@
 }
 .notice {
     background: transparentize( $positive, 0.7 );
+}
+
+.reset-container {
+    display: flex;
+    .btn {
+        margin-left: auto;
+    }
+    @media screen and ( max-width: 600px ){
+        padding-top: 100px;
+    }
 }
 
 

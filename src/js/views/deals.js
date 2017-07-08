@@ -35,7 +35,25 @@
 			'keyup .input--text' : 'updateInputs',
 			'click .delete'      : 'delete',
 			'change #fileUpload' : 'fileUpload',
-			'click .item-calc'   : 'goToItem'
+			'click .item-calc'   : 'goToItem',
+			'click .resetPage'   : 'resetPage'
+		},
+		resetPage: function( e ){
+			e.preventDefault();
+			this.data = {
+				count: 0,
+				total: 0,
+				units: 0,
+				unitCost: 0,
+				unitsRemaining: 0,
+				unitsUsed: 0,
+				items: [],
+				fees: {},
+				return: 0,
+				profit: 0,
+				profitDisplay: '$0'
+			};
+			this.render();
 		},
 		goToItem: function( e ){
 			var el, id, form, offset;
