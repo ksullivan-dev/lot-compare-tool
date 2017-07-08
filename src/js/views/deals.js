@@ -31,10 +31,24 @@
 			_.bindAll( this, 'addMultiple' );
 		},
 		events: {
-			'click .addOne'       : 'add',
-			'keyup .input--text'  : 'updateInputs',
-			'click .delete'       : 'delete',
-			'change #fileUpload'  : 'fileUpload'
+			'click .addOne'      : 'add',
+			'keyup .input--text' : 'updateInputs',
+			'click .delete'      : 'delete',
+			'change #fileUpload' : 'fileUpload',
+			'click .item-calc'   : 'goToItem'
+		},
+		goToItem: function( e ){
+			var el, id, form, offset;
+			el = $( e.currentTarget );
+			id = el.data( 'id' );
+			form = this.$( '.lot__details.item-' + id );
+			offset = form.offset().top;
+			$( 'html, body' ).animate({ scrollTop: offset - 100  }, 600 );
+			form.addClass( 'notice' );
+			form.find( 'input' ).first().focus();
+			setTimeout( function(){
+				form.removeClass( 'notice' );
+			}, 1000 );
 		},
 		fileUpload: function( e ){
 			var file, reader;

@@ -134,6 +134,9 @@
 .input-error {
     background: transparentize( $negative, 0.7 );
 }
+.notice {
+    background: transparentize( $positive, 0.7 );
+}
 
 
 // #header,#footer {display: none;}
