@@ -8,7 +8,7 @@
     </div>
     {{# each items }}
         {{# if isCalculated }}
-            <div class="calc calc-{{ id }}">
+            <div class="calc calc-{{ id }}{{# if isError }} input-error{{/ if }}">
                 <h3>{{# if name }}{{ name }}{{ else }}Item {{ id }}{{/ if }}</h3>
                 <p>Sales: <span class="value">${{ totals.sales }}</span></p>
                 <p>Return: <span class="value">${{ totals.return }}</span></p>

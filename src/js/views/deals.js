@@ -148,11 +148,21 @@
 					}
 					this.data.items[ id - 1 ][ input.data( 'type' ) ] = value;
 					this.calc( id );
+					if( update ){
+						this.checkInputs( id );
+					}
 				}
 				if( update ){
 					this.updateTotals();
 				}
 			}
+		},
+		checkInputs: function( id ){
+			var item, numbers;
+			item = this.data.items[ id - 1 ];
+			numbers = ! Number( item.shipping ) || ! Number( item.estimate ) || ! Number( item.price ) || ! Number( item.number );
+			item.isError = numbers;
+			this.$( '.lot__details.item-' + id )[ numbers ? 'addClass' : 'removeClass' ]( 'input-error' );
 		},
 		updateTotals: function( ){
 			var data = this.data;
