@@ -20,6 +20,7 @@
 				unitCost: 0,
 				unitsRemaining: 0,
 				unitsUsed: 0,
+				discount: 1,
 				items: [],
 				fees: {},
 				return: 0,
@@ -33,6 +34,7 @@
 		events: {
 			'click .addOne'      : 'add',
 			'keyup .input--text' : 'updateInputs',
+			'change .checkbox__input' : 'useDiscount',
 			'click .delete'      : 'delete',
 			'change #fileUpload' : 'fileUpload',
 			'click .item-calc'   : 'goToItem',
@@ -47,6 +49,7 @@
 				unitCost: 0,
 				unitsRemaining: 0,
 				unitsUsed: 0,
+				discount: 1,
 				items: [],
 				fees: {},
 				return: 0,
@@ -163,7 +166,7 @@
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
 		updateInputs: function( e ){
-			var input, value, parent, inputs, id, update;
+			var input, value, parent, inputs, id, update, useDiscount, actualPrice;
 			input = $( e.currentTarget );
 			value = input.val();
 			parent = input.closest( '.lot__details' );
@@ -171,11 +174,24 @@
 			id = parent.data( 'id' );
 			update = inputs.length === inputs.filter( function() {return this.value.length > 0;}).length;
 			if( value.length ){
+				if( input.hasClass( 'massDiscount' ) ){
+					this.data.discount = 1 - this.$( '.massDiscount' ).val() / 100;
+					this.$( 'input[data-type="price"]' ).trigger( 'keyup' );
+				}
 				if( input.hasClass( 'item--data' ) ){
 					if( input.hasClass( 'input--item' ) ){
 						parent.find( '.item' ).html( input.val() );
 					} else {
 						value = Number( value.replace( /\$|\,/g, '' ) );
+					}
+					if( input.data( 'type' ) === 'price' ){
+						useDiscount = parent.find( 'input[data-type="useDiscount"]' )[0].checked;
+						actualPrice = value;
+						if( useDiscount ){
+							actualPrice = value * this.data.discount;
+						}
+						parent.find( 'input[data-type="actualPrice"]' ).val( actualPrice ).siblings( 'label' ).addClass( 'labelize' );
+						this.data.items[ id - 1 ].actualPrice = actualPrice;
 					}
 					this.data.items[ id - 1 ][ input.data( 'type' ) ] = value;
 					this.calc( id );
@@ -188,10 +204,27 @@
 				}
 			}
 		},
+		useDiscount: function( e ){
+			var input, value, parent, id, price, actualPrice;
+			input = $( e.currentTarget );
+			value = input[0].checked;
+			parent = input.closest( '.lot__details' );
+			id = parent.data( 'id' );
+			price = this.data.items[ id - 1 ].price;
+			actualPrice = price;
+
+			if( value ){
+				actualPrice = price * this.data.discount;
+			}
+			parent.find( 'input[data-type="actualPrice"]' ).val( actualPrice ).siblings( 'label' ).addClass( 'labelize' );
+			this.data.items[ id - 1 ].actualPrice = actualPrice;
+			this.calc( id );
+			this.updateTotals();
+		},
 		checkInputs: function( id ){
 			var item, numbers;
 			item = this.data.items[ id - 1 ];
-			numbers = ! Number( item.shipping ) || ! Number( item.estimate ) || ! Number( item.price ) || ! Number( item.number );
+			numbers = ! Number( item.shipping ) || ! Number( item.estimate ) || ! Number( item.actualPrice ) || ! Number( item.number );
 			item.isError = numbers;
 			this.$( '.lot__details.item-' + id )[ numbers ? 'addClass' : 'removeClass' ]( 'input-error' );
 		},
@@ -229,7 +262,6 @@
 			if( data.profit < 0 ){
 				data.profitDisplay = '-' + data.profitDisplay;
 			}
-
 			// Render calculations
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
@@ -239,9 +271,9 @@
 			item = _.find( this.data.items, { 'id': id } );
 			fees = this.data.fees;
 			item.totals = {
-				sales : Math.round( item.estimate * item.price ),
+				sales : Math.round( item.estimate * item.actualPrice ),
 				ship  : Math.round( item.estimate * item.shipping ),
-				fees  : Math.round( item.estimate * ( item.price * fees.rates + fees.transactionFee ) )
+				fees  : Math.round( item.estimate * ( item.actualPrice * fees.rates + fees.transactionFee ) )
 			};
 			item.totals.return = item.totals.sales - item.totals.ship - item.totals.fees;
 		},

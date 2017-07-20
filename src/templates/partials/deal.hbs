@@ -16,6 +16,15 @@
         <input type="text" class="input--text input--labelize input--price item--data" data-type="price" />
         <label for="" class="input__label label--labelize">Price</span></label>
     </div>
+    <div class="input__wrapper input__wrapper--remember flex-parent__center-cross flex-parent__flex-end">
+        <p class="checkbox__label input__label flex-child__auto styled-p">Use Discount</p>
+        <input id="useDiscount-{{ count }}" type="checkbox" class="checkbox__input" data-type="useDiscount" checked>
+        <label for="useDiscount-{{ count }}" class="checkbox__graphic flex-child__auto"></label>
+    </div>
+    <div class="input__wrapper input__wrapper--labelize">
+        <input type="text" class="input--text input--labelize input--price item--data" data-type="actualPrice" disabled />
+        <label for="" class="input__label label--labelize">Actual Price</span></label>
+    </div>
     <div class="input__wrapper input__wrapper--labelize">
         <input type="text" class="input--text input--labelize input--shipping item--data" data-type="shipping" />
         <label for="" class="input__label label--labelize">Shipping</label>
