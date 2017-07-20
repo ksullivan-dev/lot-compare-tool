@@ -163,14 +163,13 @@
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
 		updateInputs: function( e ){
-			var input, value, parent, id, update;
+			var input, value, parent, inputs, id, update;
 			input = $( e.currentTarget );
 			value = input.val();
 			parent = input.closest( '.lot__details' );
+			inputs = parent.find( 'input' );
 			id = parent.data( 'id' );
-			$( parent.find( 'input' ) ).each( function( idx, el ){
-				update = el.value.length;
-			});
+			update = inputs.length === inputs.filter( function() {return this.value.length > 0;}).length;
 			if( value.length ){
 				if( input.hasClass( 'item--data' ) ){
 					if( input.hasClass( 'input--item' ) ){
