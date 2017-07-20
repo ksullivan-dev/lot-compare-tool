@@ -176,7 +176,7 @@
 					if( input.hasClass( 'input--item' ) ){
 						parent.find( '.item' ).html( input.val() );
 					} else {
-						value = Number( value );
+						value = Number( value.replace( /\$|\,/g, '' ) );
 					}
 					this.data.items[ id - 1 ][ input.data( 'type' ) ] = value;
 					this.calc( id );
@@ -240,11 +240,11 @@
 			item = _.find( this.data.items, { 'id': id } );
 			fees = this.data.fees;
 			item.totals = {
-				sales : parseInt( item.estimate * item.price ),
-				ship  : parseInt( item.estimate * item.shipping ),
-				fees  : parseInt( item.estimate * ( item.price * fees.rates + fees.transactionFee ) )
+				sales : Math.round( item.estimate * item.price ),
+				ship  : Math.round( item.estimate * item.shipping ),
+				fees  : Math.round( item.estimate * ( item.price * fees.rates + fees.transactionFee ) )
 			};
-			item.totals.return = parseInt( item.totals.sales - item.totals.ship - item.totals.fees );
+			item.totals.return = item.totals.sales - item.totals.ship - item.totals.fees;
 		},
 		delete: function( e ){
 			e.preventDefault();
