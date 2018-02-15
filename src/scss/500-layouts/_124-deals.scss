@@ -138,8 +138,11 @@
 
 .reset-container {
     display: flex;
-    .btn {
+    .btn:first-child {
         margin-left: auto;
+    }
+    .btn {
+        margin-left: 10px;
     }
     @media screen and ( max-width: 600px ){
         padding-top: 100px;

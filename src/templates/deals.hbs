@@ -1,51 +1,53 @@
+{{# with Data }}
 <div class="reset-container">
     <a href="#" class="btn btn--accent resetPage">Reset</a>
+    <a href="#" class="btn btn--primary savePage">Save</a>
 </div>
 <div class="lot items">
     <div class="lot__details">
         <h3>Lot Details</h3>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize total" />
+            <input type="text" class="input--text input--labelize total number--purchase" value="{{ purchase }}" />
             <label for="" class="input__label label--labelize">Purchase Price</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize number--total" />
+            <input type="text" class="input--text input--labelize number--total" value="{{ units }}" />
             <label for="" class="input__label label--labelize">Total Items</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize total" />
+            <input type="text" class="input--text input--labelize total number--freight" value="{{ freight }}" />
             <label for="" class="input__label label--labelize">Freight Cost</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize massDiscount" value="0" />
+            <input type="text" class="input--text input--labelize massDiscount" value="{{ discount }}" />
             <label for="" class="input__label label--labelize">Mass Discount %</label>
         </div>
     </div>
     <div class="lot__details additional-fees">
         <h3>Additional Fees</h3>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize total" />
+            <input type="text" class="input--text input--labelize total number--premium" value="{{ premium }}" />
             <label for="" class="input__label label--labelize">Buyers Premium</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize total" value="90" />
+            <input type="text" class="input--text input--labelize total" value="{{ residential }}" />
             <label for="" class="input__label label--labelize">Residential Fee</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize total" value="65" />
+            <input type="text" class="input--text input--labelize total" value="{{ liftGate }}" />
             <label for="" class="input__label label--labelize">Lift Gate Fee</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize total" value="30" />
+            <input type="text" class="input--text input--labelize total" value="{{ wire }}" />
             <label for="" class="input__label label--labelize">Wire Fee</label>
         </div>
         <h3>eBay Fees</h3>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize rates" value="0.1205" />
+            <input type="text" class="input--text input--labelize rates" value="{{ fees.rates }}" />
             <label for="" class="input__label label--labelize">Fee Rates</label>
         </div>
         <div class="input__wrapper input__wrapper--labelize">
-            <input type="text" class="input--text input--labelize transactionFee" value="0.30" />
+            <input type="text" class="input--text input--labelize transactionFee" value="{{ fees.transactionFee }}" />
             <label for="" class="input__label label--labelize">Transaction Fee</label>
         </div>
     </div>
@@ -53,3 +55,4 @@
 </div>
 <div class="calculations"></div>
 <input type="file" id="fileUpload">
+{{/ with }}

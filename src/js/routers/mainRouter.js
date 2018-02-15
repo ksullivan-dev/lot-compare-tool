@@ -9,6 +9,7 @@
 		Modal           = require('../views/_modals/baseModal'),
 		Modals          = {
 			CSVKeys    : require('../views/_modals/csvkeys'),
+			Save       : require('../views/_modals/save')
 		};
 
 		require( '../plugins/whiteout.js');
@@ -16,11 +17,11 @@
 	module.exports = Backbone.Router.extend({
 		routes: {
 			/* main routes */
-			''      : 'deals',
-			'deals' : 'deals',
+			''            : 'deals',
+			'deals(/:slug)' : 'deals',
 		},
-		deals: function(){
-			this.loadView( new Deals({ app: this.app }) );
+		deals: function( slug ){
+			this.loadView( new Deals({ app: this.app, slug: slug }) );
 		},
 		initialize: function(App) {
 			this.app = App;

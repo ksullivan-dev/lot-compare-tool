@@ -25,11 +25,27 @@
 				fees: {},
 				return: 0,
 				profit: 0,
-				profitDisplay: '$0'
+				profitDisplay: '$0',
+				purchase: 0,
+				freight: 0,
+				premium: 0,
+				residential: 90,
+				liftGate: 65,
+				wire: 30,
 			};
+			if( options.slug && localStorage[options.slug] ) {
+				this.data = JSON.parse( localStorage.getItem( options.slug ) );
+			}
 			this.render();
 			_.bindAll( this, 'processData' );
 			_.bindAll( this, 'addMultiple' );
+		},
+		savePage: function( e ){
+			e.preventDefault();
+			if( this.data.total !== 0 && this.data.profit !== 0 && this.data.purchase !== 0 && this.data.sales !== 0 ){
+				this.app.eventAggregator.trigger( 'launchModal', 'Save', {data: this.data} );
+			}
+
 		},
 		events: {
 			'click .addOne'      : 'add',
@@ -38,7 +54,8 @@
 			'click .delete'      : 'delete',
 			'change #fileUpload' : 'fileUpload',
 			'click .item-calc'   : 'goToItem',
-			'click .resetPage'   : 'resetPage'
+			'click .resetPage'   : 'resetPage',
+			'click .savePage'    : 'savePage'
 		},
 		resetPage: function( e ){
 			e.preventDefault();
@@ -54,7 +71,14 @@
 				fees: {},
 				return: 0,
 				profit: 0,
-				profitDisplay: '$0'
+				profitDisplay: '$0',
+				purchase: 0,
+				freight: 0,
+				premium: 0,
+				residential: 90,
+				liftGate: 65,
+				wire: 30,
+
 			};
 			this.render();
 		},
@@ -231,6 +255,11 @@
 		updateTotals: function( ){
 			var data = this.data;
 
+			// Purchase details
+			data.purchase = Number( this.$( '.number--purchase' ).val() );
+			data.freight = Number( this.$( '.number--freight' ).val() );
+			data.premium = Number( this.$( '.number--premium' ).val() );
+
 			// Totals
 			data.total = 0;
 			$( '.total' ).each( function( idx, el ){
@@ -301,9 +330,14 @@
 			this.updateTotals();
 		},
 		render: function () {
-			var template, layout;
-			template = this.app.templates.deals();
-			layout = '<div class="width-wrapper">' + template + '</div>';
+			var template, layout, lsKeys = [], links  = '';
+			template = this.app.templates.deals({Data: this.data});
+			for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+				var item = localStorage.key( i );
+				lsKeys.push( '<li><a href="/deals/' + item + '">' + item + '</a></li>' );
+			}
+			layout = '<div class="width-wrapper">' + template + '<ul>' + lsKeys.join( '' ) + '</ul>' + '</div>';
+
 			this.$el.html( layout );
 			this.$( '.input--labelize[value]' ).siblings( 'label' ).addClass( 'labelize' );
 			this.addItem();
