@@ -40,7 +40,7 @@
     "gulp-webserver": "^0.9.1",
     "gulp-wrap": "^0.13.0",
     "handlebars": "^4.0.5",
-    "jquery": "^2.1.4",
+    "jquery": "^3.0.0",
     "jshint": "^2.9.4",
     "lockr": "^0.8.4",
     "lodash": "^3.10.1",
