@@ -12,17 +12,19 @@
 		tagName: 'section',
 		initialize: function ( options ) {
 			var self = this;
-			this.app = options.app;
-			this.data = {
+			this.defaults = {
 				count: 0,
 				total: 0,
 				units: 0,
 				unitCost: 0,
 				unitsRemaining: 0,
 				unitsUsed: 0,
-				discount: 1,
+				discount: 0,
 				items: [],
-				fees: {},
+				fees: {
+					rates: 0.1205,
+					transactionFee: 0.30
+				},
 				return: 0,
 				profit: 0,
 				profitDisplay: '$0',
@@ -31,8 +33,10 @@
 				premium: 0,
 				residential: 90,
 				liftGate: 65,
-				wire: 30,
+				wire: 30
 			};
+			this.app = options.app;
+			this.data = _.clone( this.defaults );
 			if( options.slug && localStorage[options.slug] ) {
 				this.data = JSON.parse( localStorage.getItem( options.slug ) );
 			}
@@ -45,7 +49,6 @@
 			if( this.data.total !== 0 && this.data.profit !== 0 && this.data.purchase !== 0 && this.data.sales !== 0 ){
 				this.app.eventAggregator.trigger( 'launchModal', 'Save', {data: this.data} );
 			}
-
 		},
 		events: {
 			'click .addOne'      : 'add',
@@ -59,27 +62,7 @@
 		},
 		resetPage: function( e ){
 			e.preventDefault();
-			this.data = {
-				count: 0,
-				total: 0,
-				units: 0,
-				unitCost: 0,
-				unitsRemaining: 0,
-				unitsUsed: 0,
-				discount: 1,
-				items: [],
-				fees: {},
-				return: 0,
-				profit: 0,
-				profitDisplay: '$0',
-				purchase: 0,
-				freight: 0,
-				premium: 0,
-				residential: 90,
-				liftGate: 65,
-				wire: 30,
-
-			};
+			this.data = _.clone( this.defaults );
 			this.render();
 		},
 		goToItem: function( e ){
@@ -139,26 +122,16 @@
 				$( details ).find( '.delete' ).trigger( 'click' );
 			});
 			this.updateTotals();
-			function updateInputFromCSV( element, data, inputName, dataKey ){
-				var value;
-				if( ! dataKey ){
-					dataKey = inputName;
-				}
-				value = data[ dataKeys[ dataKey ] ];
-				if( inputName === "shipping" ){
-					value = dataKeys[ dataKey ];
-				}
-				element.find( 'input[data-type=' + inputName + ']' ).val( value ).trigger( 'keyup' );
-			}
+			this.data.items = [];
 			_.each( this.json, function( data ){
-				var element;
-				self.add();
-				element = self.$( '.lot__details[data-id=' + self.data.count + ']' );
-				updateInputFromCSV( element, data, "name");
-				updateInputFromCSV( element, data, "number" );
-				updateInputFromCSV( element, data, "estimate", "number" );
-				updateInputFromCSV( element, data, "price" );
-				updateInputFromCSV( element, data, "shipping" );
+				var item = {
+					name: data[ dataKeys.name ],
+					number: Number( data[ dataKeys.number ] ),
+					estimate: Number( data[ dataKeys.number ] ),
+					price: Number( data[ dataKeys.price ] ),
+					shipping: Number( dataKeys.shipping )
+				};
+				self.data.items.push( item );
 			});
 		},
 		add: function( e ){
@@ -184,7 +157,8 @@
 				}
 			};
 			this.data.items.push( item );
-			this.$( '.addOne' ).before( this.app.templates.partials.deal({ count: this.data.count }) );
+			// console.log( this.data.count );
+			this.$( '.addOne' ).before( this.app.templates.partials.deal({ count: this.data.count, Data: this.data }) );
 			this.$( '.lot__details[data-id=' + this.data.count + ']' ).find( 'input' ).first().focus();
 			this.$( '.lot__details[data-id=' + this.data.count + ']' ).append( '<a href="#" class="btn btn--accent action delete">Delete</a>' );
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
@@ -199,7 +173,7 @@
 			update = inputs.length === inputs.filter( function() {return this.value.length > 0;}).length;
 			if( value.length ){
 				if( input.hasClass( 'massDiscount' ) ){
-					this.data.discount = 1 - this.$( '.massDiscount' ).val() / 100;
+					this.data.discount = this.$( '.massDiscount' ).val();
 					this.$( 'input[data-type="price"]' ).trigger( 'keyup' );
 				}
 				if( input.hasClass( 'item--data' ) ){
@@ -212,7 +186,7 @@
 						useDiscount = parent.find( 'input[data-type="useDiscount"]' )[0].checked;
 						actualPrice = value;
 						if( useDiscount ){
-							actualPrice = value * this.data.discount;
+							actualPrice = value * (100 - this.data.discount)/100;
 						}
 						parent.find( 'input[data-type="actualPrice"]' ).val( actualPrice ).siblings( 'label' ).addClass( 'labelize' );
 						this.data.items[ id - 1 ].actualPrice = actualPrice;
@@ -238,7 +212,7 @@
 			actualPrice = price;
 
 			if( value ){
-				actualPrice = price * this.data.discount;
+				actualPrice = price * (100 - this.data.discount)/100;
 			}
 			parent.find( 'input[data-type="actualPrice"]' ).val( actualPrice ).siblings( 'label' ).addClass( 'labelize' );
 			this.data.items[ id - 1 ].actualPrice = actualPrice;
@@ -336,10 +310,12 @@
 				var item = localStorage.key( i );
 				lsKeys.push( '<li><a href="/deals/' + item + '">' + item + '</a></li>' );
 			}
+			console.log( this.data );
 			layout = '<div class="width-wrapper">' + template + '<ul>' + lsKeys.join( '' ) + '</ul>' + '</div>';
 
 			this.$el.html( layout );
 			this.$( '.input--labelize[value]' ).siblings( 'label' ).addClass( 'labelize' );
+			_.each( this.$( 'input' ).trigger( 'keyup' ) );
 			this.addItem();
 			return this;
 		},

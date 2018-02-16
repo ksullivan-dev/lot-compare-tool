@@ -51,6 +51,44 @@
             <label for="" class="input__label label--labelize">Transaction Fee</label>
         </div>
     </div>
+
+    {{# each items }}
+    {{# if isCalculated }}
+    <div class="lot__details item-{{ id }}" data-id="{{ id }}">
+        <h3 class="item">Item {{ id }}</h3>
+        <div class="input__wrapper input__wrapper--labelize">
+            <input type="text" class="input--text input--labelize input--item item--data" data-type="name" value="{{ name }}" />
+            <label for="" class="input__label label--labelize">Item</label>
+        </div>
+        <div class="input__wrapper input__wrapper--labelize">
+            <input type="text" class="input--text input--labelize input--number item--data" data-type="number" value={{ number }} />
+            <label for="" class="input__label label--labelize">Item Count</label>
+        </div>
+        <div class="input__wrapper input__wrapper--labelize">
+            <input type="text" class="input--text input--labelize input--estimate item--data" data-type="estimate" value="{{ estimate }}" />
+            <label for="" class="input__label label--labelize">Sellable Items</span></label>
+        </div>
+        <div class="input__wrapper input__wrapper--labelize">
+            <input type="text" class="input--text input--labelize input--price item--data" data-type="price" value={{ price }} />
+            <label for="" class="input__label label--labelize">Price</span></label>
+        </div>
+        <div class="input__wrapper input__wrapper--remember flex-parent__center-cross flex-parent__flex-end">
+            <p class="checkbox__label input__label flex-child__auto styled-p">Use Discount</p>
+            <input id="useDiscount-{{ id }}" type="checkbox" class="checkbox__input" data-type="useDiscount" checked>
+            <label for="useDiscount-{{ id }}" class="checkbox__graphic flex-child__auto"></label>
+        </div>
+        <div class="input__wrapper input__wrapper--labelize">
+            <input type="text" class="input--text input--labelize input--price item--data" data-type="actualPrice" disabled />
+            <label for="" class="input__label label--labelize">Actual Price</span></label>
+        </div>
+        <div class="input__wrapper input__wrapper--labelize">
+            <input type="text" class="input--text input--labelize input--shipping item--data" data-type="shipping" value="{{ shipping }}" />
+            <label for="" class="input__label label--labelize">Shipping</label>
+        </div>
+    </div>
+    {{/ if }}
+    {{/ each }}
+
     <a href="#" class="action addOne btn">Add Item</a>
 </div>
 <div class="calculations"></div>

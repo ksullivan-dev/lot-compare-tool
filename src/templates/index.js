@@ -26,7 +26,37 @@ exports["deals"] = Handlebars.template({"1":function(container,depth0,helpers,pa
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.fees : depth0)) != null ? stack1.rates : stack1), depth0))
     + "\" />\n            <label for=\"\" class=\"input__label label--labelize\">Fee Rates</label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize transactionFee\" value=\""
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.fees : depth0)) != null ? stack1.transactionFee : stack1), depth0))
-    + "\" />\n            <label for=\"\" class=\"input__label label--labelize\">Transaction Fee</label>\n        </div>\n    </div>\n    <a href=\"#\" class=\"action addOne btn\">Add Item</a>\n</div>\n<div class=\"calculations\"></div>\n<input type=\"file\" id=\"fileUpload\">\n";
+    + "\" />\n            <label for=\"\" class=\"input__label label--labelize\">Transaction Fee</label>\n        </div>\n    </div>\n\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n    <a href=\"#\" class=\"action addOne btn\">Add Item</a>\n</div>\n<div class=\"calculations\"></div>\n<input type=\"file\" id=\"fileUpload\">\n";
+},"2":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.isCalculated : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+},"3":function(container,depth0,helpers,partials,data) {
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+
+  return "    <div class=\"lot__details item-"
+    + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
+    + "\" data-id=\""
+    + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
+    + "\">\n        <h3 class=\"item\">Item "
+    + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
+    + "</h3>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize input--item item--data\" data-type=\"name\" value=\""
+    + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
+    + "\" />\n            <label for=\"\" class=\"input__label label--labelize\">Item</label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize input--number item--data\" data-type=\"number\" value="
+    + alias4(((helper = (helper = helpers.number || (depth0 != null ? depth0.number : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"number","hash":{},"data":data}) : helper)))
+    + " />\n            <label for=\"\" class=\"input__label label--labelize\">Item Count</label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize input--estimate item--data\" data-type=\"estimate\" value=\""
+    + alias4(((helper = (helper = helpers.estimate || (depth0 != null ? depth0.estimate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"estimate","hash":{},"data":data}) : helper)))
+    + "\" />\n            <label for=\"\" class=\"input__label label--labelize\">Sellable Items</span></label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize input--price item--data\" data-type=\"price\" value="
+    + alias4(((helper = (helper = helpers.price || (depth0 != null ? depth0.price : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"price","hash":{},"data":data}) : helper)))
+    + " />\n            <label for=\"\" class=\"input__label label--labelize\">Price</span></label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--remember flex-parent__center-cross flex-parent__flex-end\">\n            <p class=\"checkbox__label input__label flex-child__auto styled-p\">Use Discount</p>\n            <input id=\"useDiscount-"
+    + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
+    + "\" type=\"checkbox\" class=\"checkbox__input\" data-type=\"useDiscount\" checked>\n            <label for=\"useDiscount-"
+    + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
+    + "\" class=\"checkbox__graphic flex-child__auto\"></label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize input--price item--data\" data-type=\"actualPrice\" disabled />\n            <label for=\"\" class=\"input__label label--labelize\">Actual Price</span></label>\n        </div>\n        <div class=\"input__wrapper input__wrapper--labelize\">\n            <input type=\"text\" class=\"input--text input--labelize input--shipping item--data\" data-type=\"shipping\" value=\""
+    + alias4(((helper = (helper = helpers.shipping || (depth0 != null ? depth0.shipping : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shipping","hash":{},"data":data}) : helper)))
+    + "\" />\n            <label for=\"\" class=\"input__label label--labelize\">Shipping</label>\n        </div>\n    </div>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -109,7 +139,7 @@ exports["partials"]["columnMatcher"] = Handlebars.template({"compiler":[7,">= 4.
     + alias4(((helper = (helper = helpers.Field || (depth0 != null ? depth0.Field : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"Field","hash":{},"data":data}) : helper)))
     + "</strong><span class=\"column-matcher-text\"> -- Column Name: <strong class=\"column-matcher-value\"></strong></span></p>\n";
 },"useData":true});
-exports["partials"]["deal"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+exports["partials"]["deal"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<div class=\"lot__details item-"
@@ -123,4 +153,8 @@ exports["partials"]["deal"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"ma
     + "\" type=\"checkbox\" class=\"checkbox__input\" data-type=\"useDiscount\" checked>\n        <label for=\"useDiscount-"
     + alias4(((helper = (helper = helpers.count || (depth0 != null ? depth0.count : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"count","hash":{},"data":data}) : helper)))
     + "\" class=\"checkbox__graphic flex-child__auto\"></label>\n    </div>\n    <div class=\"input__wrapper input__wrapper--labelize\">\n        <input type=\"text\" class=\"input--text input--labelize input--price item--data\" data-type=\"actualPrice\" disabled />\n        <label for=\"\" class=\"input__label label--labelize\">Actual Price</span></label>\n    </div>\n    <div class=\"input__wrapper input__wrapper--labelize\">\n        <input type=\"text\" class=\"input--text input--labelize input--shipping item--data\" data-type=\"shipping\" />\n        <label for=\"\" class=\"input__label label--labelize\">Shipping</label>\n    </div>\n</div>\n";
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers["with"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Data : depth0),{"name":"with","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});

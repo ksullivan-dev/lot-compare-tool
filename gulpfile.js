@@ -96,7 +96,7 @@ gulp.task('sass-dev', ['sass-compile-dev'], function(){
 	return gulp.src('src/index.html')
 		.pipe(replace(
 			/<!-- inject:head:css -->/g,
-			'<link href="dist/css/style.css" rel="stylesheet" />'
+			'<link href="/dist/css/style.css" rel="stylesheet" />'
 		))
 		.pipe(gulp.dest(PATH.WEB_ROOT));
 });
@@ -135,8 +135,7 @@ gulp.task('templates', function () {
 		}))
 		.pipe(concat('index.js'))
 		.pipe(wrap(
-			'/*global require,exports*/\n\n' +
-			'"use strict";\nvar Handlebars = require("handlebars");\n\n<%= contents %>'
+			'"use strict";\nvar Handlebars = require("handlebars");\nHandlebars.registerHelper("ifCond", function(v1, v2, options) {if(v1 === v2) {return options.fn(this);}return options.inverse(this);});\n\n<%= contents %>'
 		))
 		.pipe(gulp.dest('./src/templates'));
 });
