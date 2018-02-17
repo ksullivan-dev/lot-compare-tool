@@ -1,6 +1,7 @@
+{{ log "im using this template"}}
 {{# with Data }}
-<div class="lot__details item-{{ count }}" data-id="{{ count }}">
-    <h3 class="item">Item {{ count }}</h3>
+<div class="lot__details item-{{ id }}" data-id="{{ id }}">
+    <h3 class="item">Item {{ id }}</h3>
     <div class="input__wrapper input__wrapper--labelize">
         <input type="text" class="input--text input--labelize input--item item--data" data-type="name" />
         <label for="" class="input__label label--labelize">Item</label>
@@ -19,8 +20,8 @@
     </div>
     <div class="input__wrapper input__wrapper--remember flex-parent__center-cross flex-parent__flex-end">
         <p class="checkbox__label input__label flex-child__auto styled-p">Use Discount</p>
-        <input id="useDiscount-{{ count }}" type="checkbox" class="checkbox__input" data-type="useDiscount" checked>
-        <label for="useDiscount-{{ count }}" class="checkbox__graphic flex-child__auto"></label>
+        <input id="useDiscount-{{ id }}" type="checkbox" class="checkbox__input" data-type="useDiscount" checked>
+        <label for="useDiscount-{{ id }}" class="checkbox__graphic flex-child__auto"></label>
     </div>
     <div class="input__wrapper input__wrapper--labelize">
         <input type="text" class="input--text input--labelize input--price item--data" data-type="actualPrice" disabled />

@@ -26,7 +26,7 @@
                 var id = val + '_' + Moment().format( 'MM-DD-YYYY_kkmmss' );
                 localStorage.setItem( id, JSON.stringify( this.data ) );
                 this.parent.close();
-                Backbone.history.navigate( '/deals/' + id );
+                Backbone.history.navigate( '/deals/' + id, { trigger: true } );
             } else {
                 alert( 'Enter a name');
             }

@@ -36,7 +36,7 @@
 			var self = this;
 
 			// Navigate all links that are not external or action links within the app
-			$( document ).on( 'click', 'a:not( .action )', function( e ){
+			$( document ).on( 'click', 'a:not( .action, .btn )', function( e ){
 				if( e.currentTarget.hostname === window.location.hostname ){
 					self.globalLinkHandler( e );
 				} else {

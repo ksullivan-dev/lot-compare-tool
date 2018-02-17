@@ -20,7 +20,20 @@
 				unitsRemaining: 0,
 				unitsUsed: 0,
 				discount: 0,
-				items: [],
+				items: [{
+					id: 1,
+					isCalculated: true,
+					estimate: 0,
+					number: 0,
+					price: 0,
+					shipping: 0,
+					totals: {
+						fees: 0,
+						return: 0,
+						sales: 0,
+						ship: 0
+					}
+				}],
 				fees: {
 					rates: 0.1205,
 					transactionFee: 0.30
@@ -44,12 +57,6 @@
 			_.bindAll( this, 'processData' );
 			_.bindAll( this, 'addMultiple' );
 		},
-		savePage: function( e ){
-			e.preventDefault();
-			if( this.data.total !== 0 && this.data.profit !== 0 && this.data.purchase !== 0 && this.data.sales !== 0 ){
-				this.app.eventAggregator.trigger( 'launchModal', 'Save', {data: this.data} );
-			}
-		},
 		events: {
 			'click .addOne'      : 'add',
 			'keyup .input--text' : 'updateInputs',
@@ -58,12 +65,34 @@
 			'change #fileUpload' : 'fileUpload',
 			'click .item-calc'   : 'goToItem',
 			'click .resetPage'   : 'resetPage',
-			'click .savePage'    : 'savePage'
+			'click .savePage'    : 'savePage',
+			'click .deleteLocalStorage' : 'deleteLocalStorage'
 		},
 		resetPage: function( e ){
 			e.preventDefault();
 			this.data = _.clone( this.defaults );
+			Backbone.history.navigate('/', {trigger: true});
 			this.render();
+		},
+		savePage: function( e ){
+			e.preventDefault();
+			if( this.data.total !== 0 && this.data.profit !== 0 && this.data.purchase !== 0 && this.data.sales !== 0 ){
+				this.app.eventAggregator.trigger( 'launchModal', 'Save', {data: this.data} );
+			}
+		},
+		deleteLocalStorage: function( e ){
+			e.preventDefault();
+			localStorage.removeItem( $( e.currentTarget ).data( 'id' ) );
+			var links = this.getLocalStorageLinks();
+			this.$( 'ul.local-storage-links' ).html( links.join( '' ) );
+		},
+		getLocalStorageLinks: function(){
+			var lsKeys = [];
+			for ( var i = 0, len = localStorage.length; i < len; ++i ) {
+				var item = localStorage.key( i );
+				lsKeys.push( '<li><a href="/deals/' + item + '">' + item + '</a> | <a href="#" class="deleteLocalStorage" data-id="' + item + '">Delete</a></li>' );
+			}
+			return lsKeys;
 		},
 		goToItem: function( e ){
 			var el, id, form, offset;
@@ -125,30 +154,32 @@
 			this.data.items = [];
 			_.each( this.json, function( data ){
 				var item = {
+					id: self.data.items.length + 1,
 					name: data[ dataKeys.name ],
 					number: Number( data[ dataKeys.number ] ),
 					estimate: Number( data[ dataKeys.number ] ),
 					price: Number( data[ dataKeys.price ] ),
-					shipping: Number( dataKeys.shipping )
+					shipping: Number( dataKeys.shipping ),
+					isCalculated: true
 				};
 				self.data.items.push( item );
 			});
+			this.render();
 		},
 		add: function( e ){
-			var self = this;
 			if( e ){
 				e.preventDefault();
 			}
-			this.addItem();
-		},
-		addItem: function(){
-			var item, self;
-			self = this;
-			this.data.count++;
+			var item, id;
+			id = this.data.items.length + 1;
 			item = {
-				id: this.data.count,
-				name: 'Item ' + this.data.count,
+				id: id,
+				name: 'Item ' + id,
 				isCalculated: true,
+				number: 1,
+				estimate: 1,
+				price: 0,
+				shipping: 0,
 				totals: {
 					sales: 0,
 					fees: 0,
@@ -157,19 +188,17 @@
 				}
 			};
 			this.data.items.push( item );
-			// console.log( this.data.count );
-			this.$( '.addOne' ).before( this.app.templates.partials.deal({ count: this.data.count, Data: this.data }) );
-			this.$( '.lot__details[data-id=' + this.data.count + ']' ).find( 'input' ).first().focus();
-			this.$( '.lot__details[data-id=' + this.data.count + ']' ).append( '<a href="#" class="btn btn--accent action delete">Delete</a>' );
+			this.render();
 			this.$( '.calculations' ).html( this.app.templates.partials.calc({ Data: this.data }) );
 		},
 		updateInputs: function( e ){
-			var input, value, parent, inputs, id, update, useDiscount, actualPrice;
+			var input, value, parent, inputs, id, itemIndex, update, useDiscount, actualPrice;
 			input = $( e.currentTarget );
 			value = input.val();
 			parent = input.closest( '.lot__details' );
 			inputs = parent.find( 'input' );
 			id = parent.data( 'id' );
+			itemIndex = this.data.items.findIndex( function( dataItem ) { return dataItem.id === id; });
 			update = inputs.length === inputs.filter( function() {return this.value.length > 0;}).length;
 			if( value.length ){
 				if( input.hasClass( 'massDiscount' ) ){
@@ -189,9 +218,9 @@
 							actualPrice = value * (100 - this.data.discount)/100;
 						}
 						parent.find( 'input[data-type="actualPrice"]' ).val( actualPrice ).siblings( 'label' ).addClass( 'labelize' );
-						this.data.items[ id - 1 ].actualPrice = actualPrice;
+						this.data.items[ itemIndex ].actualPrice = actualPrice;
 					}
-					this.data.items[ id - 1 ][ input.data( 'type' ) ] = value;
+					this.data.items[ itemIndex ][ input.data( 'type' ) ] = value;
 					this.calc( id );
 					if( update ){
 						this.checkInputs( id );
@@ -203,25 +232,26 @@
 			}
 		},
 		useDiscount: function( e ){
-			var input, value, parent, id, price, actualPrice;
+			var input, value, parent, id, item, price, actualPrice;
 			input = $( e.currentTarget );
 			value = input[0].checked;
 			parent = input.closest( '.lot__details' );
 			id = parent.data( 'id' );
-			price = this.data.items[ id - 1 ].price;
+			item = this.data.items.find( function( dataItem ){ return dataItem.id === id; });
+			price = item.price;
 			actualPrice = price;
 
 			if( value ){
 				actualPrice = price * (100 - this.data.discount)/100;
 			}
 			parent.find( 'input[data-type="actualPrice"]' ).val( actualPrice ).siblings( 'label' ).addClass( 'labelize' );
-			this.data.items[ id - 1 ].actualPrice = actualPrice;
+			item.actualPrice = actualPrice;
 			this.calc( id );
 			this.updateTotals();
 		},
 		checkInputs: function( id ){
 			var item, numbers;
-			item = this.data.items[ id - 1 ];
+			item = this.data.items.find( function( dataItem ){ return dataItem.id === id; });
 			numbers = ! Number( item.shipping ) || ! Number( item.estimate ) || ! Number( item.actualPrice ) || ! Number( item.number );
 			item.isError = numbers;
 			this.$( '.lot__details.item-' + id )[ numbers ? 'addClass' : 'removeClass' ]( 'input-error' );
@@ -282,11 +312,12 @@
 		},
 		delete: function( e ){
 			e.preventDefault();
-			var el, parent, item, id;
+			var el, parent, itemIndex, id;
 			el = $( e.currentTarget );
 			parent = el.closest( '.lot__details' );
 			id = parent.data( 'id' );
-			this.data.items[ id - 1 ] = {
+			itemIndex = this.data.items.findIndex( function( dataItem ){ return dataItem.id === id; });
+			this.data.items[ itemIndex ] = {
 				isCalculated: false,
 				estimate: 0,
 				number: 0,
@@ -305,18 +336,13 @@
 		},
 		render: function () {
 			var template, layout, lsKeys = [], links  = '';
+			lsKeys = this.getLocalStorageLinks();
 			template = this.app.templates.deals({Data: this.data});
-			for ( var i = 0, len = localStorage.length; i < len; ++i ) {
-				var item = localStorage.key( i );
-				lsKeys.push( '<li><a href="/deals/' + item + '">' + item + '</a></li>' );
-			}
-			console.log( this.data );
-			layout = '<div class="width-wrapper">' + template + '<ul>' + lsKeys.join( '' ) + '</ul>' + '</div>';
+			layout = '<div class="width-wrapper">' + template + '<ul class="local-storage-links">' + lsKeys.join( '' ) + '</ul>' + '</div>';
 
 			this.$el.html( layout );
 			this.$( '.input--labelize[value]' ).siblings( 'label' ).addClass( 'labelize' );
 			_.each( this.$( 'input' ).trigger( 'keyup' ) );
-			this.addItem();
 			return this;
 		},
 		close: function () {
